@@ -1,0 +1,1023 @@
+\ProvidesPackage{boilerart}
+
+%-------------------------------------------------------------------%
+%  Typesetting                                                      %
+%-------------------------------------------------------------------%
+
+\newif\if@minionmath
+\newif\if@normal
+
+\DeclareOption{minionmath}{\@minionmathtrue}
+\DeclareOption{normal}{\@normaltrue}
+\ProcessOptions*
+
+\if@minionmath
+  \RequirePackage[math-style=ISO]{unicode-math}
+  \setmainfont[Numbers={OldStyle}, Ligatures={Common}]{Minion Pro}
+  \setmonofont[Scale=MatchLowercase]{Myriad Pro Light}
+  \setmathfont[version=bold]{MinionMath-Bold.otf}
+  \setmathfont[
+      Extension = .otf,
+      Scale = 1,
+      Script = Math,
+      SizeFeatures = {
+              {Size = -6, Font = MinionMath-Tiny,
+                Style = MathScriptScript},
+              {Size = 6-8.4, Font = MinionMath-Capt,
+                Style = MathScript},
+              {Size = 8.4-13, Font = MinionMath-Regular,
+                Style = MathScript},
+              {Size = 13-19.9, Font = MinionMath-Subh,
+                Style = MathScript},
+              {Size = 19.9-72, Font = MinionMath-Disp},
+              {Size = 72-, Font = MinionMath-Disp,
+                Style = MathScript},
+      },
+      ]{MinionMath-Regular}
+  \setmathfont[range={\mathscr}]{XITS Math}
+  \setmathfont[range={\mathit}]{MinionMath-Regular.otf}
+  \setmathfont[range={\mathfrak}]{UnifrakturMaguntia}
+  \newfontfamily{\japanesefont}{Hiragino Sans W3}
+  \usepackage{unicode-minionmath}
+
+  \renewcommand{\Diamond}{󳴪}
+  \newcommand{\el}{󰪓} % Italic version of \ell
+  \newcommand{\textgreek}[1]{#1}
+
+  \newcommand{\Japanese}[1]{{\japanesefont \mathchoice{\ensuremath{\text{\footnotesize #1}}}{\ensuremath{\text{\footnotesize #1}}}{\ensuremath{\text{\tiny #1}}}{\ensuremath{\text{\tiny #1}}}}} % Defines a macro to use Japanese (or any CJK) characters in math mode; font size adjusted to be closer to the standard size for math fonts, and mathchoice makes it so that subscripts etc. scale. It will probably be better to take a smaller size than "tiny" for the subsubscript style…though I can't forsee this being used much
+
+  % For よ we're lucky that there's a "small よ" in Japanese (ょ) which can improve subscript display
+
+  \newcommand{\yo}{{\japanesefont \mathchoice{\ensuremath{\text{\footnotesize よ}}}{\ensuremath{\text{\footnotesize よ}}}{\ensuremath{\text{\footnotesize ょ}}}{\ensuremath{\text{\tiny ょ}}}}}
+\fi
+
+\if@normal
+  \usepackage[LGR,T1]{fontenc} % LGR allows for Greek text input
+  \usepackage[utf8]{inputenc} 
+  \RequirePackage[lcgreekalpha,upint]{stix} % For older TeX distributions, use stix rather than stix2
+  \usepackage{inconsolata}
+  \newcommand{\mathup}[1]{\mathrm{#1}}
+  \newcommand{\mathbfup}[1]{\mathbf{#1}}
+  \def\labelitemi{\textup{--}}
+  \newcommand{\el}{\ell}
+  \newcommand{\textgreek}[1]{\begingroup\fontencoding{LGR}\selectfont#1\endgroup} % Creates an environment to input Greek text as unicode characters (while still using PDFLaTeX)
+
+  \usepackage{CJKutf8}
+
+  \newcommand{\Japanese}[1]{\begin{CJK}{UTF8}{min} \CJKfamily{goth} \mathchoice{\ensuremath{\text{\footnotesize #1}}}{\ensuremath{\text{\footnotesize #1}}}{\ensuremath{\text{\tiny #1}}}{\ensuremath{\text{\tiny #1}}} \begin{CJK}{UTF8}{min}} % Defines a macro to use Japanese (or any CJK) characters in math mode; font size adjusted to be closer to the standard size for math fonts, and mathchoice makes it so that subscripts etc. scale. It will probably be better to take a smaller size than "tiny" for the subsubscript style…though I can't forsee this being used much
+
+  % For よ we're lucky that there's a "small よ" in Japanese (ょ) which can improve subscript display
+
+  \newcommand{\yo}{\begin{CJK}{UTF8}{min} \CJKfamily{goth} \mathchoice{\ensuremath{\text{\footnotesize よ}}}{\ensuremath{\text{\footnotesize よ}}}{\ensuremath{\text{\footnotesize ょ}}}{\ensuremath{\text{\tiny ょ}}} \end{CJK}}
+\fi
+
+\usepackage{xspace}
+
+\frenchspacing
+
+\usepackage[final,factor=1100,stretch=10,shrink=10]{microtype}
+
+\SetProtrusion{encoding={*},family={bch},series={*},size={6,7}}
+              {1={ ,750},2={ ,500},3={ ,500},4={ ,500},5={ ,500},
+               6={ ,500},7={ ,600},8={ ,500},9={ ,500},0={ ,500}}
+
+\SetExtraKerning[unit=space]
+    {encoding={*}, family={bch}, series={*}, size={footnotesize,small,normalsize}}
+    {\textendash={400,400}, % en-dash, add more space around it
+     "28={ ,150}, % left bracket, add space from right
+     "29={150, }, % right bracket, add space from left
+     \textquotedblleft={ ,150}, % left quotation mark, space from right
+     \textquotedblright={150, }} % right quotation mark, space from left
+
+\SetTracking{encoding={*}, shape=sc}{40}
+
+%-------------------------------------------------------------------%
+%  Hyperlinks                                                       %
+%-------------------------------------------------------------------%
+
+\usepackage{imakeidx}
+\usepackage{url} % Allows for printing of URLs with TeX symbols that normally wouldn't be printed such as "~"
+\usepackage{hyperref}
+\if@minionmath
+  \hypersetup{
+      colorlinks=true, %set true if you want colored links
+      linktoc=all,     %set to all if you want both sections and subsections linked
+      linkcolor=love,  %choose some color if you want links to stand out
+      citecolor = love,
+      pdfencoding=unicode,
+      % urlcolor=blue, % choose some color to set links to websites
+      hypertexnames = true,
+  }
+\fi
+
+\if@normal
+  \hypersetup{
+      colorlinks=true, %set true if you want colored links
+      linktoc=all,     %set to all if you want both sections and subsections linked
+      linkcolor=love,  %choose some color if you want links to stand out
+      citecolor = love,
+      % urlcolor=blue, % choose some color to set links to websites
+  }
+\fi
+
+%-------------------------------------------------------------------%
+% PDF bookmarks                                                     %
+%-------------------------------------------------------------------%
+
+% Adds section numbers to PDF bookmarks
+\usepackage{bookmark}
+\bookmarksetup{
+  numbered, 
+  open,
+}
+
+%-------------------------------------------------------------------%
+%  References                                                       %
+%-------------------------------------------------------------------%
+
+
+% Uses biblatex pacage for citations and sets basic global styling
+%-------------------------------------------------------------------%
+
+\usepackage[style=ieee,citestyle=numeric,backend=biber,sorting=nyt,url=false]{biblatex} % url=false removes '[Online] Available: _repetition of DOI_'
+\AtEveryBibitem{\clearfield{issn}} % Removes ISSN (retains ISBN)
+\AtEveryCitekey{\clearfield{issn}}
+\AtBeginBibliography{\small} % Sets references font size
+\renewcommand*{\bibnamedash}{\underline{\hspace{3em}}\kern 0.1em} % Uses an underline when an author has multiple publications (in line with the AMS style)
+\renewcommand{\multicitedelim}{\addsemicolon\space} % Uses a semicolon delimeter for multiple citations
+\DeclareFieldFormat{postnote}{#1} % Removes the "p." when just a number is referenced
+\DeclareFieldFormat[article,inbook,incollection,inproceedings,patent,thesis,unpublished]
+  {title}{\textit{#1\isdot}}     % Uniformly italicizes title of all works
+\DeclareFieldFormat{journaltitle}{#1}  % Makes Journal title in normal text
+\DeclareFieldFormat[book,inbook,incollection,inproceedings]{series}{#1} % Takes away the "ser." in front of Series Title that is part of the ieee styling
+
+% Definition of various links to make it easy to hyperlink to the Stacks project and the books of Jacob
+%-------------------------------------------------------------------%
+
+\newcommand{\stackslink}[1]{\href{http://stacks.math.columbia.edu/tag/#1}{#1}} % For use with multiple references
+
+\newcommand{\kerodonlink}[1]{\href{http://kerodon.net/tag/#1}{#1}} % For use with multiple references
+
+% Part Links
+\newcommand{\SAGpartlink}[1]{\href{http://www.math.harvard.edu/~lurie/papers/SAG-rootfile.pdf\#part.#1}{#1}}
+
+% Chapter Links
+\newcommand{\HTTchlink}[1]{\href{http://www.math.harvard.edu/~lurie/papers/HTT.pdf\#chapter.#1}{#1}}
+\newcommand{\HAchlink}[1]{\href{http://www.math.harvard.edu/~lurie/papers/HA.pdf\#chapter.#1}{#1}}
+\newcommand{\SAGchlink}[1]{\href{http://www.math.harvard.edu/~lurie/papers/SAG-rootfile.pdf\#chapter.#1}{#1}}
+
+% Appendix Links
+\newcommand{\HTTapplink}[1]{\href{http://www.math.harvard.edu/~lurie/papers/HTT.pdf\#appendix.#1}{#1}}
+\newcommand{\HAapplink}[1]{\href{http://www.math.harvard.edu/~lurie/papers/HA.pdf\#appendix.#1}{#1}}
+\newcommand{\SAGapplink}[1]{\href{http://www.math.harvard.edu/~lurie/papers/SAG-rootfile.pdf\#appendix.#1}{#1}}
+
+% Section Links
+\newcommand{\HTTseclink}[1]{\href{http://www.math.harvard.edu/~lurie/papers/HTT.pdf\#section.#1}{#1}}
+\newcommand{\HAseclink}[1]{\href{http://www.math.harvard.edu/~lurie/papers/HA.pdf\#section.#1}{#1}}
+\newcommand{\SAGseclink}[1]{\href{http://www.math.harvard.edu/~lurie/papers/SAG-rootfile.pdf\#section.#1}{#1}}
+
+% Subsection Links
+\newcommand{\HTTsubseclink}[1]{\href{http://www.math.harvard.edu/~lurie/papers/HTT.pdf\#subsection.#1}{#1}}
+\newcommand{\HAsubseclink}[1]{\href{http://www.math.harvard.edu/~lurie/papers/HA.pdf\#subsection.#1}{#1}}
+\newcommand{\SAGsubseclink}[1]{\href{http://www.math.harvard.edu/~lurie/papers/SAG-rootfile.pdf\#subsection.#1}{#1}}
+
+% Theorem/Lemma/Definition/etc. Links
+\newcommand{\HTTthmlink}[1]{\href{http://www.math.harvard.edu/~lurie/papers/HTT.pdf\#theorem.#1}{#1}}
+\newcommand{\HAthmlink}[1]{\href{http://www.math.harvard.edu/~lurie/papers/HA.pdf\#theorem.#1}{#1}}
+\newcommand{\HAappthmlink}[1]{\href{http://www.math.harvard.edu/~lurie/papers/HA.pdf\#atheorem.#1}{#1}} % Appendix theorems are numbered differently
+\newcommand{\SAGthmlink}[1]{\href{http://www.math.harvard.edu/~lurie/papers/SAG-rootfile.pdf\#theorem.#1}{#1}}
+
+% Page Links
+\newcommand{\HTTpagelink}[1]{\href{http://www.math.harvard.edu/~lurie/papers/HTT.pdf\#page.#1}{#1}}
+\newcommand{\HApagelink}[1]{\href{http://www.math.harvard.edu/~lurie/papers/HA.pdf\#page.#1}{#1}}
+\newcommand{\SAGpagelink}[1]{\href{http://www.math.harvard.edu/~lurie/papers/SAG-rootfile.pdf\#page.#1}{#1}}
+
+% Definition of various references to make it easy to hyperlink to the Stacks project and the books of Jacob
+%-------------------------------------------------------------------%
+
+\newcommand{\stackstag}[1]{\href{http://stacks.math.columbia.edu/tag/#1}{Tag #1}} %for single reference use
+
+\newcommand{\kerodontag}[1]{\href{http://kerodon.net/tag/#1}{Tag #1}} %for single reference use
+
+% Part Reference
+\newcommand{\SAGpart}[1]{\href{http://www.math.harvard.edu/~lurie/papers/SAG-rootfile.pdf\#part.#1}{Part #1}}
+
+% Chapter Reference
+\newcommand{\HTTch}[1]{\href{http://www.math.harvard.edu/~lurie/papers/HTT.pdf\#chapter.#1}{Chapter #1}}
+\newcommand{\HAch}[1]{\href{http://www.math.harvard.edu/~lurie/papers/HA.pdf\#chapter.#1}{Chapter #1}}
+\newcommand{\SAGch}[1]{\href{http://www.math.harvard.edu/~lurie/papers/SAG-rootfile.pdf\#chapter.#1}{Chapter #1}}
+
+% Appendix Reference
+\newcommand{\HTTapp}[1]{\href{http://www.math.harvard.edu/~lurie/papers/HTT.pdf\#appendix.#1}{Appendix #1}}
+\newcommand{\HAapp}[1]{\href{http://www.math.harvard.edu/~lurie/papers/HA.pdf\#appendix.#1}{Appendix #1}}
+\newcommand{\SAGapp}[1]{\href{http://www.math.harvard.edu/~lurie/papers/SAG-rootfile.pdf\#appendix.#1}{Appendix #1}}
+
+% Section Reference
+\newcommand{\HTTsec}[1]{\href{http://www.math.harvard.edu/~lurie/papers/HTT.pdf\#section.#1}{\S #1}}
+\newcommand{\HAsec}[1]{\href{http://www.math.harvard.edu/~lurie/papers/HA.pdf\#section.#1}{\S #1}}
+\newcommand{\SAGsec}[1]{\href{http://www.math.harvard.edu/~lurie/papers/SAG-rootfile.pdf\#section.#1}{\S #1}}
+
+% Subsection Reference
+\newcommand{\HTTsubsec}[1]{\href{http://www.math.harvard.edu/~lurie/papers/HTT.pdf\#subsection.#1}{\S #1}}
+\newcommand{\HAsubsec}[1]{\href{http://www.math.harvard.edu/~lurie/papers/HA.pdf\#subsection.#1}{\S #1}}
+\newcommand{\SAGsubsec}[1]{\href{http://www.math.harvard.edu/~lurie/papers/SAG-rootfile.pdf\#subsection.#1}{\S #1}}
+
+% Theorem/Lemma/Definition/etc. Reference
+\newcommand{\HTTthm}[2]{\href{http://www.math.harvard.edu/~lurie/papers/HTT.pdf\#theorem.#2}{#1 #2}}
+\newcommand{\HAthm}[2]{\href{http://www.math.harvard.edu/~lurie/papers/HA.pdf\#theorem.#2}{#1 #2}}
+\newcommand{\HAappthm}[2]{\href{http://www.math.harvard.edu/~lurie/papers/HA.pdf\#atheorem.#2}{#1 #2}} % Appendix theorems are numbered differently
+\newcommand{\SAGthm}[2]{\href{http://www.math.harvard.edu/~lurie/papers/SAG-rootfile.pdf\#theorem.#2}{#1 #2}}
+
+% Page Reference
+\newcommand{\HTTpage}[1]{\href{http://www.math.harvard.edu/~lurie/papers/HTT.pdf\#page.#1}{p. #1}}
+\newcommand{\HApage}[1]{\href{http://www.math.harvard.edu/~lurie/papers/HA.pdf\#page.#1}{p. #1}}
+\newcommand{\SAGpage}[1]{\href{http://www.math.harvard.edu/~lurie/papers/SAG-rootfile.pdf\#page.#1}{p. #1}}
+
+% Quick Citation command for citing a single theorem, lemma, etc. 
+%-------------------------------------------------------------------%
+
+% Use: for stacks \stacks{Tag Number}, for HTT/HA/SAG, e.g., \HTT{Environment name}{Number}
+
+\newcommand{\stacks}[1]{\cite[\stackstag{#1}]{stacksproject}}
+\newcommand{\kerodon}[1]{\cite[\kerodontag{#1}]{Kerodon}}
+\newcommand{\HTT}[2]{\cite[\HTTthm{#1}{#2}]{HTT}}
+\newcommand{\HA}[2]{\cite[\HAthm{#1}{#2}]{HA}}
+\newcommand{\HAa}[2]{\cite[\HAappthm{#1}{#2}]{HA}} % For theorems in the appendix of HA because the numbering is different
+\newcommand{\SAG}[2]{\cite[\SAGthm{#1}{#2}]{SAG}}
+
+% cleverref package 
+%-------------------------------------------------------------------%
+
+\usepackage[noabbrev,nameinlink,capitalize]{cleveref} % Uses the cleveref package for convenient within-document referencing. The placement of this package IS IMPORTANT. (It may not work if it is placed in a different order with respect to other packages.)
+
+  % The commands below specify how the cleveref package names different environments when they are cited. There are two options, "\cref" and "\Cref". I've used \cref for abbreviated forms and \Cref for long forms. We can cange any and all of these; I just used put some things that seemed standard.
+
+  % Has cref parenthesize "nul" references
+  \crefformat{nul}{(#2#1#3)}
+  \Crefformat{nul}{(#2#1#3)}
+
+  \crefname{nul}{}{}
+  \crefname{section}{\S\!}{\S\S\!}
+  \crefname{subsection}{\S\!}{\S\S\!}
+  \crefname{ntn}{Notation}{Notations}
+  \crefname{def}{Definition}{Definitions}
+  \crefname{lem}{Lemma}{Lemmas} 
+  \crefname{prp}{Proposition}{Propositions}
+  \crefname{cor}{Corollary}{Corollaries}
+  \crefname{thm}{Theorem}{Theorems}
+  \Crefname{mainthm}{Theorem}{Theorems}
+  \Crefname{nul}{}{}
+  \Crefname{section}{Section}{Sections}
+  \Crefname{subsection}{Subsection}{Subsections}
+  \Crefname{ntn}{Notation}{Notations}
+  \Crefname{def}{Definition}{Definitions}
+  \Crefname{lem}{Lemma}{Lemmas} 
+  \Crefname{prp}{Proposition}{Propositions}
+  \Crefname{cor}{Corollary}{Corollaries}
+  \Crefname{thm}{Theorem}{Theorems}
+  \Crefname{mainthm}{Theorem}{Theorems}
+  \Crefname{exm}{Example}{Examples}
+
+%-------------------------------------------------------------------%
+%  Sectioning                                                       %
+%-------------------------------------------------------------------%
+
+\usepackage{enumerate, mdwlist}
+
+\swapnumbers
+\theoremstyle{definition}
+\numberwithin{equation}{section}
+\newtheorem{nul}[equation]{}
+\newtheorem{dfn}[equation]{Definition}
+\newtheorem{axm}[equation]{Axiom}
+\newtheorem{cnstr}[equation]{Construction}
+\newtheorem{ntn}[equation]{Notation}
+\newtheorem{exm}[equation]{Example}
+\newtheorem{subexm}[equation]{Subexample}
+\newtheorem{ctrexm}[equation]{Counterexample}
+\newtheorem{rec}[equation]{Recollection}
+\newtheorem{exr}[equation]{Exercise}
+\newtheorem{wrn}[equation]{Warning}
+\newtheorem{qst}[equation]{Question}
+\newtheorem*{dfn*}{Definition}
+\newtheorem*{axm*}{Axiom}
+\newtheorem*{ntn*}{Notation}
+\newtheorem*{exm*}{Example}
+\newtheorem*{exr*}{Exercise}
+\newtheorem*{int*}{Intuition}
+\newtheorem*{qst*}{Question}
+
+\theoremstyle{plain}
+\newtheorem{sch}[equation]{Scholium}
+\newtheorem{thm}[equation]{Theorem}
+\newtheorem{prp}[equation]{Proposition}
+\newtheorem{lem}[equation]{Lemma}
+\newtheorem{sublem}[equation]{Lemma}
+\newtheorem{por}[equation]{Porism}
+\newtheorem{cnj}[equation]{Conjecture}
+\newtheorem{cor}[equation]{Corollary}
+\newtheorem*{thm*}{Theorem}
+\newtheorem*{prp*}{Proposition}
+\newtheorem*{cor*}{Corollary}
+\newtheorem*{lem*}{Lemma}
+\newtheorem*{cnj*}{Conjecture}
+
+\theoremstyle{plain}
+\newtheorem{mainthm}{Theorem}
+\renewcommand{\themainthm}{\Alph{mainthm}}
+
+\theoremstyle{definition}
+\newtheorem{mainexm}[mainthm]{Example}
+\renewcommand{\themainexm}{\Alph{mainexm}}
+
+%-------------------------------------------------------------------%
+%  Symbols and letters                                              %
+%-------------------------------------------------------------------%
+
+\if@minionmath
+  \renewcommand{\AA}{\mbfA}
+  \newcommand{\BB}{\mbfB}
+  \newcommand{\CC}{\mbfC}
+  \newcommand{\DD}{\mbfD}
+  \newcommand{\EE}{\mbfE}
+  \newcommand{\FF}{\mbfF}
+  \newcommand{\GG}{\mbfG}
+  \newcommand{\HH}{\mbfH}
+  \newcommand{\II}{\mbfI}
+  \newcommand{\JJ}{\mbfJ}
+  \newcommand{\KK}{\mbfK}
+  \newcommand{\LL}{\mbfL}
+  \newcommand{\MM}{\mbfM}
+  \newcommand{\NN}{\mbfN}
+  \newcommand{\OO}{\mbfO}
+  \newcommand{\PP}{\mbfP}
+  \newcommand{\QQ}{\mbfQ}
+  \newcommand{\RR}{\mbfR}
+  \renewcommand{\SS}{\mbfS}
+  \newcommand{\TT}{\mbfT}
+  \newcommand{\UU}{\mbfU}
+  \newcommand{\VV}{\mbfV}
+  \newcommand{\WW}{\mbfW}
+  \newcommand{\XX}{\mbfX}
+  \newcommand{\YY}{\mbfY}
+  \newcommand{\ZZ}{\mbfZ}
+
+  \newcommand{\Deltaup}{\mathrm{\Delta}}
+  \newcommand{\Thetaup}{\mathrm{\Theta}}
+  \newcommand{\Lambdaup}{\mathrm{\Lambda}}
+  \newcommand{\Sigmaup}{\mathrm{\Sigma}}
+  \newcommand{\Upsilonup}{\mathrm{\Upsilon}}
+  \newcommand{\Phiup}{\mathrm{\Phi}}
+  \newcommand{\Psiup}{\mathrm{\Psi}}
+  \newcommand{\Omegaup}{\mathrm{\Omega}}
+
+  \newcommand{\N}{\mathrm{N}}
+\fi
+
+\if@normal
+  \renewcommand{\AA}{\mathbfit{A}}
+  \newcommand{\BB}{\mathbfit{B}}
+  \newcommand{\CC}{\mathbfit{C}}
+  \newcommand{\DD}{\mathbfit{D}}
+  \newcommand{\EE}{\mathbfit{E}}
+  \newcommand{\FF}{\mathbfit{F}}
+  \newcommand{\GG}{\mathbfit{G}}
+  \newcommand{\HH}{\mathbfit{H}}
+  \newcommand{\II}{\mathbfit{I}}
+  \newcommand{\JJ}{\mathbfit{J}}
+  \newcommand{\KK}{\mathbfit{K}}
+  \newcommand{\LL}{\mathbfit{L}}
+  \newcommand{\MM}{\mathbfit{M}}
+  \newcommand{\NN}{\mathbfit{N}}
+  \newcommand{\OO}{\mathbfit{O}}
+  \newcommand{\PP}{\mathbfit{P}}
+  \newcommand{\QQ}{\mathbfit{Q}}
+  \newcommand{\RR}{\mathbfit{R}}
+  \renewcommand{\SS}{\mathbfit{S}}
+  \newcommand{\TT}{\mathbfit{T}}
+  \newcommand{\UU}{\mathbfit{U}}
+  \newcommand{\VV}{\mathbfit{V}}
+  \newcommand{\WW}{\mathbfit{W}}
+  \newcommand{\XX}{\mathbfit{X}}
+  \newcommand{\YY}{\mathbfit{Y}}
+  \newcommand{\ZZ}{\mathbfit{Z}}
+
+  %Creates italic Greek (matching the ISO standard)
+
+  \let\Gammaup\Gamma
+  \let\Deltaup\Delta
+  \let\Thetaup\Theta
+  \let\Lambdaup\Lambda
+  \let\Xiup\Xi
+  \let\Piup\Pi
+  \let\Sigmaup\Sigma
+  \let\Upsilonup\Upsilon
+  \let\Phiup\Phi
+  \let\Psiup\Psi
+  \let\Omegaup\Omega
+
+  \renewcommand{\Gamma}{\mathit{\Gammaup}}
+  \renewcommand{\Delta}{\mathit{\Deltaup}}
+  \renewcommand{\Theta}{\mathit{\Thetaup}}
+  \renewcommand{\Lambda}{\mathit{\Lambdaup}}
+  \renewcommand{\Xi}{\mathit{\Xiup}}
+  \renewcommand{\Pi}{\mathit{\Piup}}
+  \renewcommand{\Sigma}{\mathit{\Sigmaup}}
+  \renewcommand{\Upsilon}{\mathit{\Upsilonup}}
+  \renewcommand{\Phi}{\mathit{\Phiup}}
+  \renewcommand{\Psi}{\mathit{\Psiup}}
+  \renewcommand{\Omega}{\mathit{\Omegaup}}
+
+
+  \newcommand{\mbfm}{\mathbfit{m}}
+  \newcommand{\mbfPi}{\mathbfit{\Pi}}
+  \newcommand{\mbfDelta}{\mathbfit{\Deltaup}}
+  \newcommand{\upPsi}{\Psiup}
+\fi
+
+\DeclareMathOperator{\Aut}{Aut}
+\DeclareMathOperator{\cofib}{cofib}
+\DeclareMathOperator{\coker}{coker}
+\DeclareMathOperator{\const}{const}
+\DeclareMathOperator*{\colim}{colim}
+\DeclareMathOperator{\cored}{cored}
+\DeclareMathOperator{\cosk}{cosk}
+\DeclareMathOperator{\creff}{cr}
+\DeclareMathOperator{\End}{End}
+\DeclareMathOperator{\ev}{ev}
+\DeclareMathOperator{\Ex}{Ex}
+\DeclareMathOperator{\Exc}{Exc}
+\DeclareMathOperator{\Ext}{Ext}
+\DeclareMathOperator{\fib}{fib}
+\DeclareMathOperator{\Fun}{Fun}
+\DeclareMathOperator{\hocolim}{hocolim}
+\DeclareMathOperator{\Hom}{Hom}
+\DeclareMathOperator{\Ind}{Ind}
+\DeclareMathOperator{\Map}{Map}
+\DeclareMathOperator{\Mor}{Mor}
+\DeclareMathOperator{\Obj}{Obj}
+\DeclareMathOperator{\Open}{Open}
+\DeclareMathOperator{\Pic}{Pic}
+\DeclareMathOperator{\Res}{Res}
+\DeclareMathOperator{\sd}{sd}
+\DeclareMathOperator{\sk}{sk}
+\DeclareMathOperator{\Spec}{Spec}
+\DeclareMathOperator{\Stab}{Stab}
+\DeclareMathOperator{\Sub}{Sub}
+
+
+\newcommand{\categ}[1]{\textbf{\textup{#1}}}
+
+\newcommand{\Ab}{\categ{Ab}}
+\newcommand{\Alg}{\categ{Alg}}
+\newcommand{\CAlg}{\categ{CAlg}}
+\newcommand{\CMon}{\categ{CMon}}
+\newcommand{\Cat}{\categ{Cat}}
+\newcommand{\Cnstr}{\categ{Cnstr}}
+\newcommand{\Coh}{\categ{Coh}}
+\newcommand{\CSS}{\categ{CSS}}
+\newcommand{\Exact}{\categ{Exact}}
+\newcommand{\Fin}{\categ{Fin}}
+\newcommand{\Gpd}{\categ{Gpd}}
+\newcommand{\Grp}{\categ{Grp}}
+\newcommand{\Kan}{\categ{Kan}}
+\newcommand{\Mod}{\categ{Mod}}
+\newcommand{\Perf}{\categ{Perf}\mskip2mu}
+\newcommand{\QCoh}{\categ{QCoh}}
+\newcommand{\Rep}{\categ{Rep}}
+\newcommand{\Set}{\categ{Set}}
+\newcommand{\Shv}{\categ{Shv}}
+\newcommand{\Sp}{\categ{Sp}}
+\newcommand{\Space}{\SS}
+\renewcommand{\Pr}{\categ{Pr}}
+\newcommand{\Top}{\categ{Top}}
+\newcommand{\Wald}{\categ{Wald}}
+\newcommand{\heart}{\ensuremath{\heartsuit}}
+
+\newcommand{\eff}{\mskip-2mu\textit{eff}}
+\newcommand{\et}{\textit{ét}}
+\newcommand{\fin}{\textit{fin}}
+%\newcommand{\id}{\textit{id}}
+\newcommand{\op}{\textit{op}}
+%\newcommand{\pr}{\textit{pr}}
+\DeclareMathOperator{\id}{id}
+\DeclareMathOperator{\pr}{pr}
+
+
+\def\revddots{{\mathpalette\reflectedop\ddots}}
+\def\reflectedop#1#2{\mathop{\reflectbox{$#1{#2}$}}}
+\newcommand{\xdots}{\ddots\hspace{-11.6pt}\adots}
+
+\newcommand{\upsidedown}[1]{\textrm{\raisebox{\depth}{\rotatebox{180}{$#1$}}}}
+
+\def\noloc{{\mathpalette\reflectedop\colon}}
+\def\reflectedop#1#2{\mathop{\reflectbox{$#1{#2}$}}}
+
+\usepackage{mathtools} % This package lets you use the "prescript" macro 
+\usepackage{leftidx} % This lets you do both prescripts and postscripts
+
+%-------------------------------------------------------------------%
+%  Markers                                                          %
+%-------------------------------------------------------------------%
+
+\if@minionmath
+\def\labelitemi{\textup{}}
+\fi
+
+\newcommand*{\asterism}{\par\bigskip\noindent\hfill{\ooalign{\hfil\raise1ex\hbox{$\ast$}\hfil\cr$\ast$\kern-0.07ex$\ast$}}\hfill\null\par\bigskip}
+
+\newcommand{\minidiv}{\par\bigskip\noindent\hfill{}\hfill\null\par\bigskip}
+
+%-------------------------------------------------------------------%
+%  Graphics                                                         %
+%-------------------------------------------------------------------%
+
+\usepackage{tikz}
+\usepackage{tikz-cd}
+
+\usetikzlibrary{matrix,arrows,arrows.meta,bending,calc,decorations,decorations.pathmorphing,shapes}
+
+  \tikzset{
+    RRight/.tip={Glyph[glyph math command=arrowkitHeadright]},
+    double distance={0.135em},
+    commutative diagrams/.cd, 
+    arrow style=tikz, 
+  }
+
+  % tip end  -- 1
+  % back end -- 0.00512821
+  % line end -- 0.774359
+  % visual back end -- 0.574359
+  % visual tip end -- 1
+  \pgfdeclarearrow{
+      name = minionto,
+      parameters = { \the\pgfarrowlength\the\pgfarrowwidth},
+      setup code = {
+          % The different end values:
+          \pgfarrowssettipend{\pgfarrowlength}
+          \pgfarrowssetbackend{0.00512821\pgfarrowlength}
+          \pgfarrowssetlineend{0.774369\pgfarrowlength}
+          \pgfarrowssetvisualbackend{0.574359\pgfarrowlength}
+          \pgfarrowssetvisualtipend{\pgfarrowlength}
+          % The hull
+          \pgfarrowsupperhullpoint{0cm}{0.914141\pgfarrowwidth}
+          \pgfarrowsupperhullpoint{0cm}{0.469697\pgfarrowwidth}
+          \pgfarrowsupperhullpoint{0.107692\pgfarrowlength}{\pgfarrowwidth}
+          \pgfarrowshullpoint{0.574359\pgfarrowlength}{0cm}
+          \pgfarrowshullpoint{\pgfarrowlength}{0cm}
+          % Saves: the length and width
+          \pgfarrowssavethe\pgfarrowlength
+          \pgfarrowssavethe\pgflinewidth
+      },
+      drawing code = {
+          \pgfpathmoveto{\pgfpoint{0cm}{-0.914141\pgfarrowwidth}}
+          \pgfpathlineto{\pgfpoint{0.574359\pgfarrowlength}{0cm}}
+          \pgfpathlineto{\pgfpoint{0cm}{0.914141\pgfarrowwidth}}        
+          \pgfpathlineto{\pgfpoint{0.107692\pgfarrowlength}{\pgfarrowwidth}}
+          \pgfpathcurveto{\pgfpoint{0.528205\pgfarrowlength}{0.5\pgfarrowwidth}}
+                         {\pgfpoint{0.548718\pgfarrowlength}{0.469697\pgfarrowwidth}}
+                         {\pgfpoint{\pgfarrowlength}{0cm}}
+          \pgfpathcurveto{\pgfpoint{0.528205\pgfarrowlength}{-0.5\pgfarrowwidth}}
+                         {\pgfpoint{0.548718\pgfarrowlength}{-0.469697\pgfarrowwidth}}
+                         {\pgfpoint{0.107692\pgfarrowlength}{-\pgfarrowwidth}}
+          \pgfpathclose
+          \pgfusepathqfill
+      },
+      defaults = {length=0.22em, width=0.19em}
+  }
+
+  \pgfarrowsdeclarereversed{miniontail}{miniontail}{minionto}{minionto}
+
+  \pgfdeclarearrow{
+      name = minionhook,
+      parameters = { \the\pgflinewidth},
+      setup code = {
+          \pgfmathsetlength{\pgfarrowlength}{4.48\pgflinewidth}
+          \pgfarrowssetlineend{\pgflinewidth}
+          \pgfarrowssettipend{\pgfarrowlength}
+          % The hull
+          \pgfarrowsupperhullpoint{0cm}{0.914141\pgflinewidth}
+          \pgfarrowsupperhullpoint{0cm}{0.469697\pgflinewidth}
+          \pgfarrowsupperhullpoint{0.107692\pgfarrowlength}{\pgflinewidth}
+          \pgfarrowshullpoint{0.574359\pgfarrowlength}{0cm}
+          \pgfarrowshullpoint{\pgfarrowlength}{0cm}
+          % Saves: the length and width
+          \pgfarrowssavethe\pgflinewidth
+          \pgfarrowssavethe\pgfarrowlength
+      },
+      drawing code = {
+          \pgfpathmoveto{\pgfpoint{0.25\pgfarrowlength}{-3.84\pgflinewidth}}
+          \pgfpathlineto{\pgfpoint{0.25\pgfarrowlength}{-2.86\pgflinewidth}}
+          \pgfpathcurveto{\pgfpoint{0.73660714\pgfarrowlength}{-2.86\pgflinewidth}}
+                         {\pgfpoint{0.73660714\pgfarrowlength}{-1.9\pgflinewidth}}
+                         {\pgfpoint{0.73660714\pgfarrowlength}{-1.6\pgflinewidth}}
+          \pgfpathcurveto{\pgfpoint{0.73660714\pgfarrowlength}{-0.54\pgflinewidth}}
+                         {\pgfpoint{0.35267857\pgfarrowlength}{-0.45\pgflinewidth}}
+                         {\pgfpoint{0.0\pgfarrowlength}{-0.51\pgflinewidth}}
+          \pgfpathlineto{\pgfpoint{0.0\pgfarrowlength}{0.5\pgflinewidth}}
+          \pgfpathcurveto{\pgfpoint{0.97767857\pgfarrowlength}{0.7\pgflinewidth}}
+                         {\pgfpoint{0.99107143\pgfarrowlength}{-1.2\pgflinewidth}}
+                         {\pgfpoint{1.0\pgfarrowlength}{-1.6\pgflinewidth}}
+          \pgfpathcurveto{\pgfpoint{0.95982143\pgfarrowlength}{-3.86\pgflinewidth}}
+                         {\pgfpoint{0.39732143\pgfarrowlength}{-3.86\pgflinewidth}}
+                         {\pgfpoint{0.25\pgfarrowlength}{-3.86\pgflinewidth}}
+          \pgfpathclose
+          \pgfusepathqfill
+      },
+      defaults = {length=0.22em, width=0.19em}
+  }
+
+  \pgfdeclarearrow{
+      name = minionhook',
+      parameters = { \the\pgflinewidth},
+      setup code = {
+          \pgfmathsetlength{\pgfarrowlength}{4.48\pgflinewidth}
+          \pgfarrowssetlineend{\pgflinewidth}
+          \pgfarrowssettipend{\pgfarrowlength}
+          % The hull
+          \pgfarrowsupperhullpoint{0cm}{0.914141\pgflinewidth}
+          \pgfarrowsupperhullpoint{0cm}{0.469697\pgflinewidth}
+          \pgfarrowsupperhullpoint{0.107692\pgfarrowlength}{\pgflinewidth}
+          \pgfarrowshullpoint{0.574359\pgfarrowlength}{0cm}
+          \pgfarrowshullpoint{\pgfarrowlength}{0cm}
+          % Saves: the length and width
+          \pgfarrowssavethe\pgflinewidth
+          \pgfarrowssavethe\pgfarrowlength
+      },
+      drawing code = {
+          \pgfpathmoveto{\pgfpoint{0.25\pgfarrowlength}{3.84\pgflinewidth}}
+          \pgfpathlineto{\pgfpoint{0.25\pgfarrowlength}{2.86\pgflinewidth}}
+          \pgfpathcurveto{\pgfpoint{0.73660714\pgfarrowlength}{2.86\pgflinewidth}}
+                         {\pgfpoint{0.73660714\pgfarrowlength}{1.9\pgflinewidth}}
+                         {\pgfpoint{0.73660714\pgfarrowlength}{1.6\pgflinewidth}}
+          \pgfpathcurveto{\pgfpoint{0.73660714\pgfarrowlength}{0.54\pgflinewidth}}
+                         {\pgfpoint{0.35267857\pgfarrowlength}{0.45\pgflinewidth}}
+                         {\pgfpoint{0.0\pgfarrowlength}{0.51\pgflinewidth}}
+          \pgfpathlineto{\pgfpoint{0.0\pgfarrowlength}{-0.5\pgflinewidth}}
+          \pgfpathcurveto{\pgfpoint{0.97767857\pgfarrowlength}{-0.7\pgflinewidth}}
+                         {\pgfpoint{0.99107143\pgfarrowlength}{1.2\pgflinewidth}}
+                         {\pgfpoint{1.0\pgfarrowlength}{1.6\pgflinewidth}}
+          \pgfpathcurveto{\pgfpoint{0.95982143\pgfarrowlength}{3.86\pgflinewidth}}
+                         {\pgfpoint{0.39732143\pgfarrowlength}{3.86\pgflinewidth}}
+                         {\pgfpoint{0.25\pgfarrowlength}{3.86\pgflinewidth}}
+          \pgfpathclose
+          \pgfusepathqfill
+      },
+      defaults = {length=0.22em, width=0.19em}
+  }
+
+  \tikzset{
+    >/.tip={minionto},
+    >->/.style = {miniontail-minionto},
+    <-</.style = {minionto-miniontail},
+    <->/.style = {minionto-miniontail},
+    hooked/.style = {minionhook-minionto},
+    hooked'/.style = {minionhook'-minionto},
+  }
+
+  \tikzset{
+  RRight/.tip={Glyph[glyph math command=arrowkitHeadright]},
+}
+
+\pgfdeclaredecoration{single line}{initial}{\state{initial}[width=\pgfdecoratedpathlength-1sp]{\pgfpathmoveto{\pgfpointorigin}}\state{final}{\pgfpathlineto{\pgfpointorigin}}}
+
+% Sets global tikzcd settings
+\tikzcdset{  crossing over/.style={
+    /tikz/preaction={
+      /tikz/draw,
+      /tikz/color=\pgfkeysvalueof{/tikz/commutative diagrams/background color},
+      /tikz/arrows=-,
+      /tikz/line width=\pgfkeysvalueof{/tikz/commutative
+      diagrams/crossing over clearance}}}}
+
+% Fixes the tikzcd 'equals' to not have a visible line between the ends of the two equals lines
+
+\if@minionmath
+  % Surjection
+  \newcommand{\surjection}{↠}
+  \newcommand{\surjto}[2]{{#1}\surjection{#2}}
+
+  % Fibration
+  \newcommand{\fibration}{↠}
+  \newcommand{\fibto}[2]{{#1}\surjection{#2}}
+
+
+  % Equivalent
+  \newcommand{\equivalence}{⥲}
+  \newcommand{\equivto}[2]{{#1}\equivalence{#2}}
+
+  % Isomorphism
+  \newcommand{\isomorphism}{⥲}
+  \newcommand{\isomto}[2]{{#1}\isomorphism{#2}}
+
+  % Bijection
+  \newcommand{\bijection}{⥲}
+  \newcommand{\bijectiontwoway}{ \ \tikz[baseline]\draw[>={Stealth[scale=0.75]},<->,font=\scriptsize,inner sep=0.5pt](0,0.5ex)--node[above]{$\sim$}(0.75,0.5ex);\ }
+  \newcommand{\bijto}[2]{{#1}\bijection{#2}}
+  \newcommand{\bijbackforth}[2]{{#1}\bijectiontwoway{#2}}
+
+  % Fromto
+  \newcommand{\newto}{→}
+  \newcommand{\fromto}[2]{{#1}\newto{#2}}
+  \newcommand{\tripseq}[3]{{#1}\newto{#2}\newto{#3}}
+  \newcommand{\tripfib}[3]{{#1}\inclusion{#2}\surjection{#3}}
+  \newcommand{\ot}{←}
+
+  % Ratto
+
+  \newcommand{\rationalmap}{⇢}
+  \newcommand{\ratto}[2]{{#1}\rationalmap{#2}}
+
+  % Parallelto
+  \newcommand{\parallelto}{⇉}
+  \newcommand{\parto}[2]{{#1}\parallelto{#2}}
+
+  % Inclusion
+  \newcommand{\inclusion}{↪}
+  \newcommand{\incto}[2]{{#1}\inclusion{#2}}
+
+  % Closed Inclusion
+
+  \newcommand{\closedinclusion}{\arrowkithookuphead\arrowkitNEG\arrowkitheadright}
+  \newcommand{\clincto}[2]{{#1} \closedinclusion {#2}}
+
+  % Open Inclusion
+
+  \newcommand{\openinclusion}{\arrowkithookuphead\kern-0.65em⇴}
+  \newcommand{\opincto}[2]{{#1} \openinclusion {#2}}
+
+  % Injection
+  \newcommand{\injection}{↣}
+  \newcommand{\injectionop}{↢}
+  \newcommand{\into}[2]{{#1} \injection {#2}}
+  \newcommand{\inot}[2]{{#1} \injectionop {#2}}
+
+  % Cofibration
+  \newcommand{\cofibration}{↣}
+  \newcommand{\cofibto}[2]{{#1} \cofib {#2}}
+
+  % Trivial Cofibration
+  \newcommand{\trivcofib}{⤚⥲}
+  \newcommand{\trivcofibto}[2]{{#1} \trivcofib {#2}}
+
+
+  % Mapsto
+  \newcommand{\mapstoarrow}{↦}
+  \newcommand{\goesto}[2]{{#1} \mapstoarrow {#2}}
+
+  %\newcounter{sarrow}
+  %\newcommand\goesto[2]{\%
+  %#1\stepcounter{sarrow}\%
+  %\mathrel{\begin{tikzpicture}[baseline= {( $ (current bounding box.south) + (0,-0.25ex) $ )}]
+  %\node[inner sep=.5ex] (\thesarrow) {$\quad$};
+  %\path[draw,>={Stealth[scale=0.75]},<-,decorate,
+  %  decoration={zigzag,amplitude=0.7pt,segment length=1.2mm,pre=lineto,pre length=4pt}] 
+  %    (\thesarrow.south east) -- (\thesarrow.south west);
+  %\end{tikzpicture}}#2\%
+  %}
+
+  % Overarrows
+  \newcommand{\overarrow}[1]{ \ \tikz[baseline]\draw[>={Stealth[scale=0.75]},->,font=\scriptsize,inner sep=0.5pt](0,0.5ex)--node[above,xshift=-.2ex,yshift=0.1ex]{$ #1 $}(0.5,0.5ex);\ }
+  \newcommand{\overto}[3]{{#1} \overarrow{#2} {#3}}
+  \newcommand{\overinjection}[1]{ \ \tikz[baseline]\draw[>={Stealth[scale=0.75]},>->,font=\scriptsize,inner sep=0.5pt](0,0.6ex)--node[above,yshift=0.1ex]{$ #1 $}(0.5,0.6ex);\ }
+  \newcommand{\overinto}[3]{{#1} \overinjection{#2} {#3}}
+
+  % Backforth
+  \def\reflectedop#1#2{\mathop{\reflectbox{$#1{#2}$}}}
+  \def\noloc{{\mathpalette\reflectedop\colon}}
+
+  \newcommand{\backforth}[4]{{#1}\colon{#2} ⇄ {#3}\noloc{#4}}
+
+  \newcommand{\adjto}[4]{{#1}\colon{#2} ⇄ {#3}\noloc{#4}}
+
+  %\newcommand{\adjto}[4]{{#1}\colon{#2}\ \begin{tikzpicture}[baseline] \draw[>={Stealth[scale=0.75]},->] (0,1.25ex) -- (0.75,1.25ex); \draw[>={Stealth[scale=0.75]},->] (0.75,0.2ex) -- (0,0.2ex); \draw[anchor=mid,commutative diagrams/phantom,->] (0,0.9ex) -- node{$ {\scriptscriptstyle \bot} $} (0.75,0.9ex); \end{tikzpicture}\ {#3}\noloc{#4}}
+
+  % 2-cell
+  \newcommand{\natto}[2]{{#1}⟹{#2}}
+
+  % Convto
+  \newcommand{\convto}{\natto}
+
+  % 3-cell
+  \newcommand{\longRrightarrow}{%
+     \mathrel{\arrowkitHEADnone\arrowkittripleext\arrowkitHEADright}}
+  \newcommand{\modto}[2]{{#1}\longRrightarrow{#2}}
+\fi
+
+
+\if@normal
+  % Surjection
+  \newcommand{\surjection}{\twoheadrightarrow}
+  \newcommand{\surjto}[2]{{#1}\surjection{#2}}
+
+  % Fibration
+  \newcommand{\fibration}{\twoheadrightarrow}
+  \newcommand{\fibto}[2]{{#1}\surjection{#2}}
+
+
+  % Equivalent
+  \newcommand{\equivalence}{\similarrightarrow}
+  \newcommand{\equivto}[2]{{#1}\equivalence{#2}}
+
+  % Isomorphism
+  \newcommand{\isomorphism}{\similarrightarrow}
+  \newcommand{\isomto}[2]{{#1}\isomorphism{#2}}
+
+  % Bijection
+  \newcommand{\bijection}{\similarrightarrow}
+  \newcommand{\bijectiontwoway}{ \ \tikz[baseline]\draw[>={Stealth[scale=0.75]},<->,font=\scriptsize,inner sep=0.5pt](0,0.5ex)--node[above]{$\sim$}(0.75,0.5ex);\ }
+  \newcommand{\bijto}[2]{{#1}\bijection{#2}}
+  \newcommand{\bijbackforth}[2]{{#1}\bijectiontwoway{#2}}
+
+  % Fromto
+  \newcommand{\newto}{\to}
+  \newcommand{\fromto}[2]{{#1}\newto{#2}}
+  \newcommand{\tripseq}[3]{{#1}\newto{#2}\newto{#3}}
+  \newcommand{\tripfib}[3]{{#1}\inclusion{#2}\surjection{#3}}
+  \newcommand{\ot}{\leftarrow}
+
+  % Ratto
+
+  \newcommand{\rationalmap}{\rightdotarrow}
+  \newcommand{\ratto}[2]{{#1}\rationalmap{#2}}
+
+  % Parallelto
+  \newcommand{\parallelto}{\rightrightarrows}
+  \newcommand{\parto}[2]{{#1}\parallelto{#2}}
+
+  % Inclusion
+  \newcommand{\inclusion}{\hookrightarrow}
+  \newcommand{\incto}[2]{{#1}\inclusion{#2}}
+
+  % Closed Inclusion
+
+  %\newcommand{\closedinclusion}{\arrowkithookuphead\arrowkitNEG\arrowkitheadright}
+  %\newcommand{\clincto}[2]{{#1} \closedinclusion {#2}}
+
+  % Open Inclusion
+
+  %\newcommand{\openinclusion}{\arrowkithookuphead\kern-0.65em⇴}
+  %\newcommand{\opincto}[2]{{#1} \openinclusion {#2}}
+
+  % Injection
+  \newcommand{\injection}{\rightarrowtail}
+  \newcommand{\injectionop}{\leftarrowtail}
+  \newcommand{\into}[2]{{#1} \injection {#2}}
+  \newcommand{\inot}[2]{{#1} \injectionop {#2}}
+
+  % Cofibration
+  \newcommand{\cofibration}{\rightarrowtail}
+  \newcommand{\cofibto}[2]{{#1} \cofib {#2}}
+
+  % Trivial Cofibration
+  %\newcommand{\trivcofib}{⤚⥲}
+  %\newcommand{\trivcofibto}[2]{{#1} \trivcofib {#2}}
+
+
+  % Mapsto
+  \newcommand{\mapstoarrow}{\mapsto}
+  \newcommand{\goesto}[2]{{#1} \mapstoarrow {#2}}
+
+  %\newcounter{sarrow}
+  %\newcommand\goesto[2]{\%
+  %#1\stepcounter{sarrow}\%
+  %\mathrel{\begin{tikzpicture}[baseline= {( $ (current bounding box.south) + (0,-0.25ex) $ )}]
+  %\node[inner sep=.5ex] (\thesarrow) {$\quad$};
+  %\path[draw,>={Stealth[scale=0.75]},<-,decorate,
+  %  decoration={zigzag,amplitude=0.7pt,segment length=1.2mm,pre=lineto,pre length=4pt}] 
+  %    (\thesarrow.south east) -- (\thesarrow.south west);
+  %\end{tikzpicture}}#2\%
+  %}
+
+  % Overarrows
+  \newcommand{\overarrow}[1]{ \ \tikz[baseline]\draw[>={Stealth[scale=0.75]},->,font=\scriptsize,inner sep=0.5pt](0,0.5ex)--node[above,xshift=-.2ex,yshift=0.1ex]{$ #1 $}(0.5,0.5ex);\ }
+  \newcommand{\overto}[3]{{#1} \overarrow{#2} {#3}}
+  \newcommand{\overinjection}[1]{ \ \tikz[baseline]\draw[>={Stealth[scale=0.75]},>->,font=\scriptsize,inner sep=0.5pt](0,0.6ex)--node[above,yshift=0.1ex]{$ #1 $}(0.5,0.6ex);\ }
+  \newcommand{\overinto}[3]{{#1} \overinjection{#2} {#3}}
+
+  % Backforth
+  \def\reflectedop#1#2{\mathop{\reflectbox{$#1{#2}$}}}
+  \def\noloc{{\mathpalette\reflectedop\colon}}
+
+  \newcommand{\backforth}[4]{{#1}\colon{#2} \rightleftarrows {#3}\noloc{#4}}
+
+  \newcommand{\adjto}[4]{{#1}\colon{#2} \rightleftarrows {#3}\noloc{#4}}
+
+  %\newcommand{\adjto}[4]{{#1}\colon{#2}\ \begin{tikzpicture}[baseline] \draw[>={Stealth[scale=0.75]},->] (0,1.25ex) -- (0.75,1.25ex); \draw[>={Stealth[scale=0.75]},->] (0.75,0.2ex) -- (0,0.2ex); \draw[anchor=mid,commutative diagrams/phantom,->] (0,0.9ex) -- node{$ {\scriptscriptstyle \bot} $} (0.75,0.9ex); \end{tikzpicture}\ {#3}\noloc{#4}}
+
+  % 2-cell
+  \newcommand{\natto}[2]{{#1}\longRigharrow{#2}}
+
+  % Convto
+  %\newcommand{\convto}{\natto}
+
+  % 3-cell
+  %\newcommand{\longRrightarrow}{%
+  %  \mathrel{\arrowkitHEADnone\arrowkittripleext\arrowkitHEADright}}
+  %\newcommand{\modto}[2]{{#1}\longRrightarrow{#2}}
+\fi
+
+\definecolor{tulip}{RGB}{69, 9, 67}
+\definecolor{love}{RGB}{128, 15, 37}
+\definecolor{champ}{RGB}{249, 205, 173}
+\definecolor{lobster}{RGB}{255, 64, 64}
+\definecolor{dutch}{RGB}{22, 147, 165}
+\definecolor{slate}{RGB}{42, 54, 59}
+
+\makeatletter
+
+  \def\tikzcdequalsignoffset{0.0925em}
+
+  % This helper macro finds the start and endpoints of a line between the source and target nodes and stores them in \sourcecoordinate and \targetcoordinate.
+  % #1 -- source node
+  % #2 -- target node
+  \def\findedgesourcetarget#1#2{
+      \let\sourcecoordinate\pgfutil@empty
+      \ifx\tikzcd@startanchor\pgfutil@empty % Check that the source doesn't have a specified anchor
+          \def\tempa{\pgfpointanchor{#1}{center}}% if so, start by taking the center of that coordinate
+      \else
+          \edef\tempa{\noexpand\pgfpointanchor{#1}{\expandafter\@gobble\tikzcd@startanchor}} % If it has an anchor, use that
+          \let\sourcecoordinate\tempa
+      \fi
+      \ifx\tikzcd@endanchor\pgfutil@empty % check that the target doesn't have a specified anchor
+          \def\tempb{\pgfpointshapeborder{#2}{\tempa}}% if so, our end point is the point on the boundary of node b that is in the direction of our initial start coordinate
+      \else
+          \edef\tempb{\noexpand\pgfpointanchor{#2}{\expandafter\@gobble\tikzcd@endanchor}}% If it has a specified anchor, use that
+      \fi
+      \let\targetcoordinate\tempb
+      \ifx\sourcecoordinate\pgfutil@empty%
+          \def\sourcecoordinate{\pgfpointshapeborder{#1}{\tempb}}%
+      \fi
+  }
+
+  \tikzset{myequal/.style = {
+      -,
+      to path={\pgfextra{
+          \findedgesourcetarget{\tikzcd@ar@start}{\tikzcd@ar@target} % find endpoints
+          % Rotate coordinate system so that line goes in x direction
+          \ifx\tikzcd@startanchor\pgfutil@empty
+              \def\tikzcd@startanchor{.center}
+          \fi
+          \ifx\tikzcd@endanchor\pgfutil@empty
+              \def\tikzcd@endanchor{.center}
+          \fi
+          \pgfmathanglebetweenpoints{\pgfpointanchor{\tikzcd@ar@start}{\expandafter\@gobble\tikzcd@startanchor}}{\pgfpointanchor{\tikzcd@ar@target}{\expandafter\@gobble\tikzcd@endanchor}}
+          \pgftransformrotate{\pgfmathresult}
+          % Draw the two lines 
+          \pgfpathmoveto{\pgfpointadd{\sourcecoordinate}{\pgfpoint{0}{\tikzcdequalsignoffset}}}
+          \pgfpathlineto{\pgfpointadd{\targetcoordinate}{\pgfpoint{0}{\tikzcdequalsignoffset}}}
+          \pgfpathmoveto{\pgfpointadd{\sourcecoordinate}{\pgfpoint{0}{-\tikzcdequalsignoffset}}}
+          \pgfpathlineto{\pgfpointadd{\targetcoordinate}{\pgfpoint{0}{-\tikzcdequalsignoffset}}}
+          \pgfsetlinewidth{0.05em}
+          \pgfusepath{draw}
+
+  }}}}
+
+\makeatother
+
+\tikzset{
+  /tikz/commutative diagrams/equal/.style=equals,
+    /tikz/commutative diagrams/equals/.style = myequal
+}
+
+
+%-------------------------------------------------------------------%
+% Restricted product                                                %
+%-------------------------------------------------------------------%
+
+\makeatletter
+\newcommand{\superimpose}[2]{%
+  {\ooalign{$#1\@firstoftwo#2$\cr\hfil$#1\@secondoftwo#2$\hfil\cr}}}
+\makeatother
+
+\newcommand{\restrictedprod}{\operatornamewithlimits{\mathpalette\superimpose{{\coprod}{\prod}}}}
+
+%-------------------------------------------------------------------%
+% Simplicial diagrams                                               %
+%-------------------------------------------------------------------%
+
+% To be used within an equation environment
+
+\newcommand{\augcosimplicial}[4]{%
+  \begin{tikzcd}[sep=1.5em, ampersand replacement=\&]
+    #1 \arrow[r] \& #2 \arrow[r, shift left=0.75ex] \arrow[r, shift right=0.75ex]  \& #3 \arrow[l] \arrow[r] \arrow[r, shift left=1.5ex] \arrow[r, shift right=1.5ex] \&  #4  \arrow[l, shift left=0.75ex] \arrow[l, shift right=0.75ex] \arrow[r, shift left=0.75ex] \arrow[r, shift right=0.75ex] \arrow[r, shift right=2.25ex] \arrow[r, shift left=2.25ex] \& \cdots \arrow[l] \arrow[l, shift left=1.5ex] \arrow[l, shift right=1.5ex]
+  \end{tikzcd}%
+}
+
+\newcommand{\cosimplicial}[3]{%
+  \begin{tikzcd}[sep=1.5em, ampersand replacement=\&]
+    #1 \arrow[r, shift left=0.75ex] \arrow[r, shift right=0.75ex]  \& #2 \arrow[l] \arrow[r] \arrow[r, shift left=1.5ex] \arrow[r, shift right=1.5ex] \&  #3  \arrow[l, shift left=0.75ex] \arrow[l, shift right=0.75ex] \arrow[r, shift left=0.75ex] \arrow[r, shift right=0.75ex] \arrow[r, shift right=2.25ex] \arrow[r, shift left=2.25ex] \& \cdots \arrow[l] \arrow[l, shift left=1.5ex] \arrow[l, shift right=1.5ex]
+  \end{tikzcd}%
+}
+
+\newcommand{\augsimplicial}[4]{%
+  \begin{tikzcd}[sep=1.5em, ampersand replacement=\&]
+    \cdots \arrow[r, shift left=0.75ex] \arrow[r, shift right=0.75ex] \arrow[r, shift right=2.25ex] \arrow[r, shift left=2.25ex] \& #1 \arrow[l] \arrow[l, shift left=1.5ex] \arrow[l, shift right=1.5ex] \arrow[r] \arrow[r, shift left=1.5ex] \arrow[r, shift right=1.5ex] \& #2 \arrow[l, shift left=0.75ex] \arrow[l, shift right=0.75ex] \arrow[r, shift left=0.75ex] \arrow[r, shift right=0.75ex] \& #3 \arrow[r] \arrow[l] \& #4 
+  \end{tikzcd}%
+}
+
+\newcommand{\simplicial}[3]{%
+  \begin{tikzcd}[sep=1.5em, ampersand replacement=\&]
+    \cdots \arrow[r, shift left=0.75ex] \arrow[r, shift right=0.75ex] \arrow[r, shift right=2.25ex] \arrow[r, shift left=2.25ex] \& #1 \arrow[l] \arrow[l, shift left=1.5ex] \arrow[l, shift right=1.5ex] \arrow[r] \arrow[r, shift left=1.5ex] \arrow[r, shift right=1.5ex] \& #2 \arrow[l, shift left=0.75ex] \arrow[l, shift right=0.75ex] \arrow[r, shift left=0.75ex] \arrow[r, shift right=0.75ex] \& #3 \arrow[l]
+  \end{tikzcd}%
+}
